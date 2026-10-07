@@ -74,7 +74,15 @@ def generate_scrap_ai_commentary(
     trend_start_date,
     trend_end_date,
     purchase_title,
-    recommendation
+    recommendation,
+    rebar_scrap_status,
+    rebar_scrap_current,
+    rebar_scrap_p25,
+    rebar_scrap_p75,
+    scrap_hbi_status,
+    scrap_hbi_current,
+    scrap_hbi_p25,
+    scrap_hbi_p75
 ):
 
 

@@ -212,33 +212,6 @@ forecast_change_pct = (
     * 100
 )
 
-
-ai_commentary = generate_scrap_ai_commentary(
-
-    current_price=current_price,
-
-    fair_value=fair_value,
-
-    fair_value_diff_pct=fair_value_diff_pct,
-
-    spread_z=spread_z,
-
-    forecast_next_month=forecast_next_month,
-
-    forecast_change_pct=forecast_change_pct,
-
-    price_trend=price_trend,
-
-    trend_change_pct=trend_change_pct,
-
-    trend_start_date=trend_start_date,
-
-    trend_end_date=trend_end_date,
-
-    purchase_title=commentary["purchase_title"],
-
-    recommendation=commentary["recommendation"]
-)
 # ======================================================
 # НАСТРОЙКИ ГРАФИКА
 # ======================================================
@@ -841,6 +814,31 @@ scrap_pig = create_scrap_pig_indicator(prices)
 
 col1, col2, col3 = st.columns(3)
 
+ai_commentary = generate_scrap_ai_commentary(
+    current_price=current_price,
+    fair_value=fair_value,
+    fair_value_diff_pct=fair_value_diff_pct,
+    spread_z=spread_z,
+    forecast_next_month=forecast_next_month,
+    forecast_change_pct=forecast_change_pct,
+    price_trend=price_trend,
+    trend_change_pct=trend_change_pct,
+    trend_start_date=trend_start_date,
+    trend_end_date=trend_end_date,
+    purchase_title=commentary["purchase_title"],
+    recommendation=commentary["recommendation"],
+
+    rebar_scrap_status=rebar_scrap["status"],
+    rebar_scrap_current=rebar_scrap["current"],
+    rebar_scrap_p25=rebar_scrap["p25"],
+    rebar_scrap_p75=rebar_scrap["p75"],
+
+    scrap_hbi_status=scrap_hbi["status"],
+    scrap_hbi_current=scrap_hbi["current"],
+    scrap_hbi_p25=scrap_hbi["p25"],
+    scrap_hbi_p75=scrap_hbi["p75"]
+)
+
 def show_signal(status, signal):
 
     if signal == "positive":
@@ -1015,47 +1013,43 @@ else:
 # AI-АНАЛИЗ
 # ==================================================
 
-st.markdown("## 🤖 AI-анализ рынка")
+st.markdown("## 🤖 Аналитический комментарий")
 
+st.markdown("**Текущая оценка**")
+st.info(ai_commentary["current_assessment"])
 
-st.markdown("### Текущая оценка")
+st.markdown("**Прогноз на следующий месяц**")
+st.info(ai_commentary["next_month"])
 
-st.write(
-    ai_commentary["current_assessment"]
-)
+st.markdown("**Ключевые рыночные факторы**")
+st.info(ai_commentary["market_factors"])
 
+st.markdown("**Структурный прогноз 6–12 месяцев**")
+st.warning(ai_commentary["structural_outlook"])
 
-st.markdown("### Прогноз на следующий месяц")
-
-st.write(
-    ai_commentary["next_month"]
-)
-
-
-st.markdown("### Ключевые факторы рынка")
-
-st.write(
-    ai_commentary["market_factors"]
-)
-
-
-st.markdown("### Горизонт 6–12 месяцев")
-
-st.write(
-    ai_commentary["structural_outlook"]
-)
-
-
-st.markdown("### Вывод для закупок")
-
-st.write(
-    ai_commentary["procurement_conclusion"]
-)
-
+st.markdown("**Вывод для закупок**")
+st.info(ai_commentary["procurement_conclusion"])
 
 if ai_commentary["sources"]:
-
     st.caption(
         "Источники: "
         + " • ".join(ai_commentary["sources"])
+    )
+
+if commentary["purchase_signal"] == "buy":
+    st.success(
+        f"📌 Рекомендация:\n\n"
+        f"{commentary['recommendation']}"
+    )
+
+elif commentary["purchase_signal"] == "avoid":
+    st.error(
+        f"📌 Рекомендация:\n\n"
+        f"{commentary['recommendation']}"
+    )
+
+else:
+    st.warning(
+        f"📌 Рекомендация:\n\n"
+        f"{commentary['recommendation']}"
     )
