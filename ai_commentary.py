@@ -44,7 +44,7 @@ def get_ai_fallback(message):
 # AI COMMENTARY — SCRAP 3A UFO
 # ======================================================
 
-@st.cache_data(ttl=86400)
+
 def generate_scrap_ai_commentary(
     current_price,
     fair_value,
