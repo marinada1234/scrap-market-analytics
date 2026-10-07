@@ -1124,7 +1124,7 @@ AI НЕ должен заменять математическую модель
     # ==================================================
 
     try:
-        st.write("2️⃣ AI: отправляю запрос OpenAI")
+        
 
         response = client.responses.create(
 
@@ -1148,7 +1148,7 @@ AI НЕ должен заменять математическую модель
                 }
             }
         )
-        st.write("3️⃣ AI: ответ OpenAI получен")
+      
 
         result = json.loads(
             response.output_text

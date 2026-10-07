@@ -812,6 +812,59 @@ rebar_scrap = create_rebar_scrap_indicator(prices)
 scrap_hbi = create_scrap_hbi_indicator(prices)
 scrap_pig = create_scrap_pig_indicator(prices)
 
+def get_rebar_scrap_comment(indicator):
+    current = indicator["current"]
+    p25 = indicator["p25"]
+    p75 = indicator["p75"]
+
+    if current > p75:
+        return (
+            "🟢 Спред выше 75-го перцентиля. "
+            "Лом относительно стоимости арматуры находится на низком уровне, "
+            "что расширяет ценовое пространство для потребителей и создаёт "
+            "потенциал для поддержки закупочных цен на лом."
+        )
+
+    elif current < p25:
+        return (
+            "🔴 Спред ниже 25-го перцентиля. "
+            "Лом относительно стоимости арматуры дорог, что сужает ценовое "
+            "пространство потребителей и ограничивает потенциал роста цены лома."
+        )
+
+    else:
+        return (
+            "⚪ Спред находится в исторически нейтральном диапазоне. "
+            "Выраженного ценового сигнала для рынка лома нет."
+        )
+
+
+def get_scrap_hbi_comment(indicator):
+    current = indicator["current"]
+    p25 = indicator["p25"]
+    p75 = indicator["p75"]
+
+    if current < p25:
+        return (
+            "🟢 Спред ниже 25-го перцентиля. "
+            "Лом относительно ГБЖ дешёв, что повышает его ценовую привлекательность "
+            "как металлической шихты и является поддерживающим фактором для цены."
+        )
+
+    elif current > p75:
+        return (
+            "🔴 Спред выше 75-го перцентиля. "
+            "Лом относительно ГБЖ дорог, что снижает его ценовую привлекательность "
+            "и ограничивает потенциал роста цены."
+        )
+
+    else:
+        return (
+            "⚪ Спред находится в исторически нейтральном диапазоне. "
+            "Выраженного сигнала со стороны относительной стоимости шихты нет."
+        )
+
+
 col1, col2, col3 = st.columns(3)
 
 
@@ -886,7 +939,9 @@ with col1:
         else "negative" if rebar_scrap["current"] < rebar_scrap["p25"]
         else "neutral"
     )
-
+    st.caption(
+        get_rebar_scrap_comment(rebar_scrap)
+    )
 
 with col2:
     st.plotly_chart(
@@ -899,6 +954,9 @@ with col2:
         "positive" if scrap_hbi["current"] < scrap_hbi["p25"]
         else "negative" if scrap_hbi["current"] > scrap_hbi["p75"]
         else "neutral"
+    )
+    st.caption(
+        get_scrap_hbi_comment(scrap_hbi)
     )
 
 
