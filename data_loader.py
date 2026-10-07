@@ -3,6 +3,8 @@ import requests
 import pandas as pd
 from dotenv import load_dotenv
 import streamlit as st
+from io import BytesIO
+
 # ======================================================
 # ПЕРЕМЕННЫЕ ОКРУЖЕНИЯ
 # ======================================================
@@ -1283,7 +1285,7 @@ def get_monthly_hbi_price(df_weekly):
 METALTORG_API_KEY = os.getenv("METALTORG_API_KEY")
 if not METALTORG_API_KEY:
     METALTORG_API_KEY = st.secrets.get("METALTORG_API_KEY")
-    
+
 def load_metaltorg_series(api_id, column_name):
   if not METALTORG_API_KEY:
     raise ValueError(
@@ -1346,10 +1348,11 @@ def load_cbr_usd():
   )
   response.raise_for_status()
   # Читаем XML ЦБ
+  # 
   df = pd.read_xml(
-    response.content,
+    BytesIO(response.content),
     xpath=".//Record"
-  )
+)
   df["date"] = pd.to_datetime(
     df["Date"],
     format="%d.%m.%Y",
