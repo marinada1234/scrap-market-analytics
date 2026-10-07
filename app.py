@@ -814,8 +814,6 @@ scrap_pig = create_scrap_pig_indicator(prices)
 
 col1, col2, col3 = st.columns(3)
 
-import inspect
-st.write("AI FUNCTION:", inspect.signature(generate_scrap_ai_commentary))
 
 ai_commentary = generate_scrap_ai_commentary(
     current_price=current_price,
