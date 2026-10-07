@@ -2,6 +2,7 @@ import os
 import requests
 import pandas as pd
 from dotenv import load_dotenv
+import streamlit as st
 # ======================================================
 # ПЕРЕМЕННЫЕ ОКРУЖЕНИЯ
 # ======================================================
@@ -19,6 +20,14 @@ EMAIL = os.getenv(
 PASSWORD = os.getenv(
   "METALS_PASSWORD"
 )
+# Если приложение запущено в Streamlit Cloud,
+# берём данные из Streamlit Secrets
+
+if not EMAIL:
+    EMAIL = st.secrets.get("METALS_EMAIL")
+
+if not PASSWORD:
+    PASSWORD = st.secrets.get("METALS_PASSWORD")
 # ======================================================
 # ПОЛУЧЕНИЕ ТОКЕНА
 # ======================================================
@@ -1272,6 +1281,9 @@ def get_monthly_hbi_price(df_weekly):
   return monthly
 
 METALTORG_API_KEY = os.getenv("METALTORG_API_KEY")
+if not METALTORG_API_KEY:
+    METALTORG_API_KEY = st.secrets.get("METALTORG_API_KEY")
+    
 def load_metaltorg_series(api_id, column_name):
   if not METALTORG_API_KEY:
     raise ValueError(
