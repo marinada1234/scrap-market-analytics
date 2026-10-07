@@ -825,12 +825,7 @@ sources:
             max_retries=0,
         ).responses.create(
             model="gpt-5-mini",
-            tools=[
-                {
-                    "type": "web_search",
-                    "search_context_size": "low",
-                }
-            ],
+            
             input=prompt,
             text={
                 "format": {
