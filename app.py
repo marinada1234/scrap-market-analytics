@@ -1080,8 +1080,6 @@ st.info(ai_commentary["next_month"])
 st.markdown("**Ключевые рыночные факторы**")
 st.info(ai_commentary["market_factors"])
 
-st.markdown("**Структурный прогноз 6–12 месяцев**")
-st.warning(ai_commentary["structural_outlook"])
 
 st.markdown("**Вывод для закупок**")
 st.info(ai_commentary["procurement_conclusion"])
