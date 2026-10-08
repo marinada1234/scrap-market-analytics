@@ -879,31 +879,6 @@ def show_scrap_hbi_signal(indicator):
 col1, col2, col3 = st.columns(3)
 
 
-ai_commentary = generate_scrap_ai_commentary(
-    current_price=current_price,
-    fair_value=fair_value,
-    fair_value_diff_pct=fair_value_diff_pct,
-    spread_z=spread_z,
-    forecast_next_month=forecast_next_month,
-    forecast_change_pct=forecast_change_pct,
-    price_trend=price_trend,
-    trend_change_pct=trend_change_pct,
-    trend_start_date=trend_start_date,
-    trend_end_date=trend_end_date,
-    purchase_title=commentary["purchase_title"],
-    recommendation=commentary["recommendation"],
-
-    rebar_scrap_status=rebar_scrap["status"],
-    rebar_scrap_current=rebar_scrap["current"],
-    rebar_scrap_p25=rebar_scrap["p25"],
-    rebar_scrap_p75=rebar_scrap["p75"],
-
-    scrap_hbi_status=scrap_hbi["status"],
-    scrap_hbi_current=scrap_hbi["current"],
-    scrap_hbi_p25=scrap_hbi["p25"],
-    scrap_hbi_p75=scrap_hbi["p75"]
-)
-
 def show_signal(status, signal):
 
     if signal == "positive":
@@ -944,12 +919,7 @@ with col1:
         use_container_width=True
     )
 
-    show_signal(
-        rebar_scrap["status"],
-        "positive" if rebar_scrap["current"] > rebar_scrap["p75"]
-        else "negative" if rebar_scrap["current"] < rebar_scrap["p25"]
-        else "neutral"
-    )
+    show_rebar_scrap_signal(rebar_scrap)
     
 
 with col2:
@@ -958,13 +928,7 @@ with col2:
         use_container_width=True
     )
 
-    show_signal(
-        scrap_hbi["status"],
-        "positive" if scrap_hbi["current"] < scrap_hbi["p25"]
-        else "negative" if scrap_hbi["current"] > scrap_hbi["p75"]
-        else "neutral"
-    )
-    
+    show_scrap_hbi_signal(scrap_hbi)
 
 with col3:
     st.plotly_chart(
@@ -1023,7 +987,6 @@ elif indicator_mode == "📊 Перегрев / недооценка":
 st.subheader(
     "💡 Решение системы"
 )
-
 # Сигнал закупки
 if commentary["purchase_signal"] == "buy":
 
@@ -1042,7 +1005,6 @@ else:
     st.warning(
         commentary["purchase_title"]
     )
-
 
 # Состояние рынка + цена + прогноз
 st.info(
@@ -1074,6 +1036,35 @@ else:
         f"📌 Рекомендация:\n\n"
         f"{commentary['recommendation']}"
     )
+
+
+
+ai_commentary = generate_scrap_ai_commentary(
+    current_price=current_price,
+    fair_value=fair_value,
+    fair_value_diff_pct=fair_value_diff_pct,
+    spread_z=spread_z,
+    forecast_next_month=forecast_next_month,
+    forecast_change_pct=forecast_change_pct,
+    price_trend=price_trend,
+    trend_change_pct=trend_change_pct,
+    trend_start_date=trend_start_date,
+    trend_end_date=trend_end_date,
+    purchase_title=commentary["purchase_title"],
+    recommendation=commentary["recommendation"],
+
+    rebar_scrap_status=rebar_scrap["status"],
+    rebar_scrap_current=rebar_scrap["current"],
+    rebar_scrap_p25=rebar_scrap["p25"],
+    rebar_scrap_p75=rebar_scrap["p75"],
+
+    scrap_hbi_status=scrap_hbi["status"],
+    scrap_hbi_current=scrap_hbi["current"],
+    scrap_hbi_p25=scrap_hbi["p25"],
+    scrap_hbi_p75=scrap_hbi["p75"]
+)
+
+
 # ==================================================
 # AI-АНАЛИЗ
 # ==================================================
@@ -1101,20 +1092,3 @@ if ai_commentary["sources"]:
         + " • ".join(ai_commentary["sources"])
     )
 
-if commentary["purchase_signal"] == "buy":
-    st.success(
-        f"📌 Рекомендация:\n\n"
-        f"{commentary['recommendation']}"
-    )
-
-elif commentary["purchase_signal"] == "avoid":
-    st.error(
-        f"📌 Рекомендация:\n\n"
-        f"{commentary['recommendation']}"
-    )
-
-else:
-    st.warning(
-        f"📌 Рекомендация:\n\n"
-        f"{commentary['recommendation']}"
-    )
