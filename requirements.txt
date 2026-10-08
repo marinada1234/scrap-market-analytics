@@ -9,3 +9,4 @@ requests
 openai
 python-dotenv
 lxml
+beautifulsoup4
