@@ -1301,8 +1301,25 @@ def load_metaltorg_series(api_id, column_name):
     url,
     timeout=120
   )
+  
   response.raise_for_status()
-  data = response.json()
+
+  print("=== METALTORG DEBUG ===", flush=True)
+  print("STATUS:", response.status_code, flush=True)
+  print("CONTENT-TYPE:", response.headers.get("Content-Type"), flush=True)
+  print("ANSWER:", response.text[:1000], flush=True)
+  print("=======================", flush=True)
+
+  try:
+      data = response.json()
+  except requests.exceptions.JSONDecodeError:
+      raise RuntimeError(
+          f"MetalTorg вернул не JSON. "
+          f"HTTP={response.status_code}; "
+          f"Content-Type={response.headers.get('Content-Type')}; "
+          f"Ответ={response.text[:500]!r}"
+      )
+
   df = pd.DataFrame(
     data["data"]
   )
