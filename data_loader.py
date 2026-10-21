@@ -1287,22 +1287,57 @@ if not METALTORG_API_KEY:
     METALTORG_API_KEY = st.secrets.get("METALTORG_API_KEY")
 
 def load_metaltorg_series(api_id, column_name):
-  if not METALTORG_API_KEY:
-    raise ValueError(
-      "METALTORG_API_KEY не найден в .env"
+    if not METALTORG_API_KEY:
+        raise ValueError(
+            "METALTORG_API_KEY не найден"
+        )
+
+    url = (
+        f"https://www.metaltorg.ru/api/"
+        f"?ID={api_id}"
+        f"&API_KEY={METALTORG_API_KEY}"
+        f"&format=JSON"
     )
-  url = (
-    f"https://www.metaltorg.ru/api/"
-    f"?ID={api_id}"
-    f"&API_KEY={METALTORG_API_KEY}"
-    f"&format=JSON"
-  )
-  response = requests.get(
-    url,
-    timeout=120
-  )
-  response.raise_for_status()
-  data = response.json()
+
+    response = requests.get(
+        url,
+        timeout=120
+    )
+
+    response.raise_for_status()
+    data = response.json()
+
+    df = pd.DataFrame(
+        data["data"]
+    )
+
+    df["date"] = pd.to_datetime(
+        df["Year"].astype(str)
+        + "-"
+        + df["Month"].astype(str)
+        + "-"
+        + df["Day"].astype(str),
+        errors="coerce"
+    )
+
+    df[column_name] = pd.to_numeric(
+        df["Value"],
+        errors="coerce"
+    )
+
+    df = (
+        df[
+            [
+                "date",
+                column_name
+            ]
+        ]
+        .dropna()
+        .sort_values("date")
+        .reset_index(drop=True)
+    )
+
+    return df
 # ==========================================================
 # METALTORG: АРМАТУРА И ЗАГОТОВКА
 # ==========================================================
